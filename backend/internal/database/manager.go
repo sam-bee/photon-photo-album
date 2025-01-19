@@ -120,3 +120,65 @@ func (m *Manager) loadPhotoRelations(p *Photo) error {
 
 	return nil
 }
+
+func (m *Manager) GetAlbums() ([]Album, error) {
+	query := `SELECT id, name, description, created_at, updated_at FROM albums ORDER BY name`
+	rows, err := m.db.Query(query)
+	if err != nil {
+		return nil, fmt.Errorf("failed to query albums: %w", err)
+	}
+	defer rows.Close()
+
+	var albums []Album
+	for rows.Next() {
+		var a Album
+		if err := rows.Scan(&a.ID, &a.Name, &a.Description, &a.CreatedAt, &a.UpdatedAt); err != nil {
+			return nil, fmt.Errorf("failed to scan album row: %w", err)
+		}
+		albums = append(albums, a)
+	}
+	return albums, nil
+}
+
+func (m *Manager) CreateAlbum(album Album) (*Album, error) {
+	query := `INSERT INTO albums (id, name, description, created_at, updated_at) VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`
+	result, err := m.db.Exec(query, album.ID, album.Name, album.Description)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create album: %w", err)
+	}
+
+	// Get the created album
+	id, _ := result.LastInsertId()
+	var created Album
+	err = m.db.QueryRow(`SELECT id, name, description, created_at, updated_at FROM albums WHERE id = ?`, id).
+		Scan(&created.ID, &created.Name, &created.Description, &created.CreatedAt, &created.UpdatedAt)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch created album: %w", err)
+	}
+
+	return &created, nil
+}
+
+func (m *Manager) UpdateAlbum(album Album) (*Album, error) {
+	query := `UPDATE albums SET name = ?, description = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`
+	if _, err := m.db.Exec(query, album.Name, album.Description, album.ID); err != nil {
+		return nil, fmt.Errorf("failed to update album: %w", err)
+	}
+
+	var updated Album
+	err := m.db.QueryRow(`SELECT id, name, description, created_at, updated_at FROM albums WHERE id = ?`, album.ID).
+		Scan(&updated.ID, &updated.Name, &updated.Description, &updated.CreatedAt, &updated.UpdatedAt)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch updated album: %w", err)
+	}
+
+	return &updated, nil
+}
+
+func (m *Manager) DeleteAlbum(id string) error {
+	query := `DELETE FROM albums WHERE id = ?`
+	if _, err := m.db.Exec(query, id); err != nil {
+		return fmt.Errorf("failed to delete album: %w", err)
+	}
+	return nil
+}
