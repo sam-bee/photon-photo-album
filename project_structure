@@ -1,0 +1,29 @@
+photo-classifier/
+├── docker/
+│   ├── backend/
+│   │   └── Dockerfile
+│   ├── frontend/
+│   │   └── Dockerfile
+│   └── ml/
+│       └── Dockerfile
+├── backend/
+│   ├── cmd/
+│   │   └── server/
+│   │       └── main.go
+│   ├── internal/
+│   │   ├── database/
+│   │   ├── api/
+│   │   └── mq/
+│   └── go.mod
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   └── App.tsx
+│   └── package.json
+├── ml/
+│   ├── src/
+│   │   ├── classifier.py
+│   │   └── mq_handler.py
+│   └── requirements.txt
+└── docker-compose.yml 

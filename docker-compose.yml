@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend/Dockerfile
+      args:
+        - DOCKERUID=${DOCKERUID:-1001}
+        - DOCKERGID=${DOCKERGID:-1001}
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: .
+      dockerfile: docker/backend/Dockerfile
+      args:
+        - DOCKERUID=${DOCKERUID:-1001}
+        - DOCKERGID=${DOCKERGID:-1001}
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+    volumes:
+      - ${PHOTOS_DIR}:/photos:ro
+      - db-data:/app/data
+    depends_on:
+      - rabbitmq
+
+  ml:
+    build:
+      context: .
+      dockerfile: docker/ml/Dockerfile
+      args:
+        - DOCKERUID=${DOCKERUID:-1001}
+        - DOCKERGID=${DOCKERGID:-1001}
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    volumes:
+      - photos:/photos:ro
+    depends_on:
+      - rabbitmq
+
+  mq:
+    image: rabbitmq:3-management
+    ports:
+      - "${MQ_PORT:-5672}:5672"
+      - "${MQ_MANAGEMENT_PORT:-15672}:15672"
+
+volumes:
+  db-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./database
+  photos:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PHOTOS_DIR}
+      read_only: true
