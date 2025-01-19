@@ -1,9 +1,10 @@
 package api
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"photo-classifier/internal/database"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Handler struct {

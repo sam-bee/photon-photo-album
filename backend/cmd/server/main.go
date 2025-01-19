@@ -1,11 +1,12 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
 	"log"
 	"os"
 	"photo-classifier/internal/api"
 	"photo-classifier/internal/database"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
