@@ -6,16 +6,8 @@ DOCKERGID := $(shell id -g)
 
 setup:
 	if [ ! -f .env ]; then cp .env.dist .env; fi
-	build
-	up
-
-# Build and start containers
---up:
-	DOCKERUID=$(DOCKERUID) DOCKERGID=$(DOCKERGID) docker compose up -d
-
-# Build containers with no cache
---build:
 	DOCKERUID=$(DOCKERUID) DOCKERGID=$(DOCKERGID) docker compose build --no-cache
+	DOCKERUID=$(DOCKERUID) DOCKERGID=$(DOCKERGID) docker compose up -d
 
 # Stop containers
 down:
@@ -24,7 +16,8 @@ down:
 # Stop containers and remove volumes
 clean:
 	docker compose down -v
-	docker system prune -f
+	docker compose kill
+	docker compose rm
 
 # Shell access to containers
 shell-frontend:
