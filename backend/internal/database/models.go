@@ -31,3 +31,9 @@ type Model struct {
 	Version   string    `json:"version"`
 	CreatedAt time.Time `json:"created_at"`
 }
+
+type PhotoFilter struct {
+	Category string
+	Album    string
+	Sort     string
+}
