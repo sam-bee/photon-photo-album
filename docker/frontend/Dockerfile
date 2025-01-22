@@ -15,20 +15,18 @@ WORKDIR /app
 # Set ownership of the working directory
 RUN chown -R appuser:appuser /app
 
-# Copy package files
-COPY frontend/package.json frontend/package-lock.json ./
+# Create new React TypeScript project
+USER appuser
+RUN npx create-react-app . --template typescript
 
 # Install dependencies
-RUN npm install
+RUN npm install @emotion/react @emotion/styled
 
 # Copy source code
 COPY frontend/ .
 
 # Set ownership of all copied files
 RUN chown -R appuser:appuser /app
-
-# Switch to the new user
-USER appuser
 
 EXPOSE 3000
 

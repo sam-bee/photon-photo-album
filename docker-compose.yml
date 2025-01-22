@@ -1,4 +1,5 @@
 services:
+
   frontend:
     build:
       context: .
@@ -11,18 +12,18 @@ services:
     depends_on:
       - backend
 
-  backend:
+  api:
     build:
       context: .
-      dockerfile: docker/backend/Dockerfile
+      dockerfile: docker/api/Dockerfile
       args:
         - DOCKERUID=${DOCKERUID:-1001}
         - DOCKERGID=${DOCKERGID:-1001}
     ports:
-      - "${BACKEND_PORT:-8080}:8080"
+      - "${BACKEND_PORT:-3000}:3000"
     volumes:
       - ${PHOTOS_DIR}:/photos:ro
-      - db-data:/app/data
+      - db-data:/app/db
     depends_on:
       - mq
 

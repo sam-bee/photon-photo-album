@@ -6,15 +6,6 @@ photo-classifier/
 │   │   └── Dockerfile
 │   └── ml/
 │       └── Dockerfile
-├── backend/
-│   ├── cmd/
-│   │   └── server/
-│   │       └── main.go
-│   ├── internal/
-│   │   ├── database/
-│   │   ├── api/
-│   │   └── mq/
-│   └── go.mod
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
@@ -26,4 +17,18 @@ photo-classifier/
 │   │   ├── classifier.py
 │   │   └── mq_handler.py
 │   └── requirements.txt
+├── api/
+│   ├── app/
+│   │   ├── controllers/
+│   │   ├── models/
+│   │   └── services/
+│   ├── config/
+│   ├── db/
+│   │   ├── migrate/
+│   │   └── seeds/
+│   ├── spec/
+│   │   ├── models/
+│   │   ├── requests/
+│   │   └── support/
+│   └── Gemfile
 └── docker-compose.yml 
